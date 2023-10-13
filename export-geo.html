@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Geofence with Leaflet</title>
+  <link rel="stylesheet" href="styles/leaflet/leaflet.css" />
+  <script src="styles/leaflet/leaflet.js"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js"></script>
+  <style>
+    html, body, #map {
+      height: 100vh;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="map" style="height: 500px;"></div>
+
+
+
+  <script>
+    var map = L.map('map').setView([51.505, -0.09], 13);
+
+    var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    })
+    osm.addTo(map);
+
+    //leaflet draw
+    var drawFeatures = new L.FeatureGroup();
+    map.addLayer(drawFeatures)
+
+    //modified code to add edit functionality
+    var drawControl = new L.Control.Draw({
+        edit: {
+            featureGroup: drawFeatures,
+            remove: true
+        }
+    });
+    map.addControl(drawControl);
+
+
+    map.on(
+      "draw:created",
+      function(e){
+        var type = e.layerType;
+        var layer = e.layer;
+        console.log(layer.toGeoJSON());
+
+        //popup to display the details of the diagram
+        layer.bindPopup(`<p>${JSON.stringify(layer.toGeoJSON())}</p>`)
+        drawFeatures.addLayer(layer);
+      }
+    );
+
+
+    map.on(
+      "draw:edited",
+      function(e){
+        var layer = e.layers;
+        var type = e.layerType;
+
+        layers.eachLayer(
+            function(layer){
+                console.log(layer)
+            }
+        )
+      }
+    );
+  </script>
+</body>
+</html>
