@@ -50,7 +50,7 @@ function App() {
     >
       <Container>
         <div className="boundary-container">
-          <svg>
+          <svg className={isEditing ? "editing": ""}>
             {
               svgList.map((svg, key) => <SVG key={key} {...svg} />)
             }
@@ -81,6 +81,9 @@ const Container = styled.div`
     svg{
       width: 100%!important;
       height: 100%!important;
+      &.editing{
+        cursor: crosshair;
+      }
     }
   }
 `
