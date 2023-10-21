@@ -1,11 +1,13 @@
 import PolylineIcon from '@mui/icons-material/Polyline';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import AddLocationIcon from '@mui/icons-material/AddLocation';
+import DeleteIcon from '@mui/icons-material/Delete';
 import AppContext from "../hooks/AppContext"
 import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 const Controls = () => {
-  const { setIsEditing, isEditing, setEditSvg, svgList } = useContext(AppContext)
+  const { setIsEditing, isEditing, setEditSvg, svgList, token, isDeleting, setIsDeleting, setGlobalPoints } = useContext(AppContext)
   const [copied, setCopied] = useState(false)
   const handleDefaultClick = (e) => {
     e.stopPropagation();
@@ -20,15 +22,25 @@ const Controls = () => {
     handleDefaultClick(e)
   }
   const handlePoligonCancelClick = (e) => {
-    setEditSvg({})
+    setEditSvg([])
     setIsEditing(false)
     handleDefaultClick(e)
   }
   const handleCopyClick = (e) => {
-    if(!isEditing){
-      navigator.clipboard.writeText(JSON.stringify(svgList))
-      setCopied(true)
-    }
+    console.log("working")
+    navigator.clipboard.writeText(JSON.stringify(svgList))
+    setCopied(true)
+    handleDefaultClick(e)
+  }
+  const handlePointClick = (e) => {
+    setGlobalPoints(prevPoints => {
+      let newPoints = JSON.parse(JSON.stringify(prevPoints))
+      newPoints.adding = !newPoints.adding
+      return newPoints
+    })
+  }
+  const handleDeleteClick = (e) => {
+    setIsDeleting(!isDeleting)
     handleDefaultClick(e)
   }
   useEffect(() => {
@@ -37,54 +49,69 @@ const Controls = () => {
     return clearTimeout(clearCopied)
   }, [copied])
   return (
-    <Container>
-      <div className='button-container' onClick={handlePoligonClick}>
-        <PolylineIcon sx={{
-          height: "18px",
-          width: "18px"
-        }}/>
-        {
-          isEditing &&
-            <div className='options'>
-              <p onClick={handlePoligonFinishClick}>Finish</p>
-              <p onClick={handlePoligonCancelClick}>Cancel</p>
-            </div>
-        }
-      </div>
-      <div className='button-container copy' onClick={handleCopyClick}>
-        <ContentCopyIcon sx={{
-          height: "18px",
-          width: "18px"
-        }}/>
-        <div className='options'>
-          {copied && <p>Copied!</p>}
+      token && 
+      <Container>
+        <div className='button-container' onClick={handlePoligonClick}>
+          <PolylineIcon sx={{
+            height: "18px",
+            width: "18px"
+          }}/>
+          {
+            isEditing &&
+              <div className='options'>
+                <p onClick={handlePoligonFinishClick}>Finish</p>
+                <p onClick={handlePoligonCancelClick}>Cancel</p>
+              </div>
+          }
         </div>
-      </div>
-    </Container>
-  )
-}
+        <div className='button-container copy' onClick={handleCopyClick}>
+          <ContentCopyIcon sx={{
+            height: "18px",
+            width: "18px"
+          }}/>
+          <div className='options'>
+            {copied && <p>Copied!</p>}
+          </div>
+        </div>
+        <div className='button-container' onClick={handlePointClick}>
+          <AddLocationIcon sx={{
+            height: "18px",
+            width: "18px"
+          }}/>
+        </div>
+        <div className='button-container' onClick={handleDeleteClick}>
+          <DeleteIcon sx={{
+            height: "18px",
+            width: "18px"
+          }}/>
+        </div>
+      </Container>
+    )
+  }
 
 export default Controls
 
 const Container = styled.div`
   position: fixed;
-  z-index: 2;
-  left: 5px;
-  top: 20px;
+  z-index: 9999999;
+  left: 10px;
+  top: 80px;
   display: flex;
   flex-direction: column;
-  border: 1px solid gray;
+  border: 2px solid #00000030;
+  border-radius: 3px;
   .button-container{
-    height: 24px;
-    width: 24px;
+    height: 30px;
+    width: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     position: relative;
+    background-color: #fff;
     .options{
       position: absolute;
-      left: 24px;
+      left: 30px;
       display: flex;
       flex-direction: row;
       height: 25px;
@@ -104,7 +131,7 @@ const Container = styled.div`
       }
     }
     &.copy .options{
-      left: 26px;
+      left: 30px;
       border-radius: 5px;
       p{
         border-radius: 5px;
@@ -114,8 +141,10 @@ const Container = styled.div`
         }
       }
     }
+    border-radius: 4px 4px 0 0;
     & ~ .button-container{
-      border-top: 1px solid black;
+      border-top: 1px solid #ccc;
+      border-radius: 0 0 4px 4px;
     }
   }
 `
