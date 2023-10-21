@@ -58,6 +58,9 @@ export const Signup = () => {
     .then(res => res.json())
     .then(res => {
       console.log(res)
+      if(res.error){
+        throw new Error(res.error)
+      }
       setLoading(false)
       navigate("/login")
 
