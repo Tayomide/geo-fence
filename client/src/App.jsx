@@ -115,6 +115,11 @@ function App() {
         }}
       >
         {!token?.length && <AuthModal />}
+        <Routes>
+          <Route path="/" exact element={<Home />} />
+          <Route path="/signup" exact element={<Signup />} />
+          <Route path="/login" exact element={<Login />} />
+        </Routes>
       </AppContext.Provider>
     </Container>
   )
