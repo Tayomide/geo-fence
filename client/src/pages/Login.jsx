@@ -17,6 +17,7 @@ export const Login = () => {
   const navigate = useNavigate()
 
   const handleSubmit = (e) => {
+    if(loading)return
     setLoading(true)
     e.preventDefault()
     const email = e.target.elements.email.value

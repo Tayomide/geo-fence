@@ -16,6 +16,7 @@ export const Signup = () => {
 
 
   const handleSubmit = (e) => {
+    if(loading)return
     setLoading(true)
     e.preventDefault()
     setEmailError(false)
