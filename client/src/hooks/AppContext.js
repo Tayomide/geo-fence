@@ -5,10 +5,24 @@ const AppContext = createContext({
   setIsEditing: () => {},
   editingIdx: -1,
   setEditingIdx: () => {},
-  editSvg: {},
+  editSvg: [],
   setEditSvg: () => {},
   svgList: [],
-  setSvgList: () => {}
+  setSvgList: () => {},
+  // Authentication
+  token: null,
+  setToken: () => {},
+  tokenExpiration: null,
+  setTokenExpiration: () => {},
+  boundaries: [],
+  setBoundaries: () => {},
+  isDeleting: false,
+  setIsDeleting: () => {},
+  globalPoints: {
+    points: [],
+    adding: false
+  },
+  setGlobalPoints: () => {}
 })
 
 export default AppContext
