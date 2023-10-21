@@ -7,7 +7,7 @@ const LeafletMap = () => {
   const zoom = 13
   const { isEditing, editSvg, setEditSvg, svgList, isDeleting, globalPoints, setGlobalPoints, setSvgList} = useContext(AppContext)
   const [map, setMap] = useState()
-  // const [map, setMap] = useState()
+  const menuIcon = new URL('/public/images/marker-icon-2x.png', import.meta.url).href
 
   const handleClick = (e) => {
     setEditSvg(tempEditSvg => {
@@ -47,7 +47,6 @@ const LeafletMap = () => {
   }
 
   const handleDelete = (e) => {
-    console.log(e)
     for(let i= svgList.length-1; i >= 0; i--){
       if(isInsidePolygon(svgList[i], [e.latlng.lat, e.latlng.lng])){
         setSvgList(prevSvg => {
@@ -66,6 +65,12 @@ const LeafletMap = () => {
       newPoints.points.push([e.latlng.lat, e.latlng.lng])
       return newPoints
     })
+    setTimeout(() => {
+      const locators = document.querySelectorAll(".leaflet-marker-icon.leaflet-interactive")
+      for(const locator of locators){
+        locator.src = menuIcon
+      }
+    }, 100);
   }
 
   useEffect(() => {
@@ -87,11 +92,6 @@ const LeafletMap = () => {
   }, [isDeleting])
 
   useEffect(() => {
-    console.log(map)
-  }, [map])
-
-  useEffect(() => {
-    console.log(globalPoints)
     while(map?._events.click?.length){
       map?._events.click.pop()
     }
