@@ -12,24 +12,28 @@ export const Login = () => {
   const [passwordError, setPasswordError] = useState(false)
   const [loginError, setLoginError] = useState(false)
   const { setToken, setTokenExpiration, setBoundaries, setSvgList } = useContext(AppContext)
+  const [loading, setLoading] = useState(false)
 
   const navigate = useNavigate()
 
   const handleSubmit = (e) => {
+    setLoading(true)
     e.preventDefault()
     const email = e.target.elements.email.value
     const password = e.target.elements.password.value
     if(email.length === 0 || password.length === 0){
       setEmailError(email.length === 0)
       setPasswordError(password.length === 0)
+      setLoading(false)
       return
     }
     const emailRegex = new RegExp(/([a-zA-Z0-9]+)([\_\.\-{1}])?([a-zA-Z0-9]+)\@([a-zA-Z0-9]+)([\.])([a-zA-Z\.]+)/g)
     if(!emailRegex.test(email)){
       setEmailError("Invalid email")
+      setLoading(false)
       return
     }
-
+    
     const body = JSON.stringify({
       "email": email,
       "password": password
@@ -50,11 +54,13 @@ export const Login = () => {
       setTokenExpiration(res.tokenExpiration)
       setBoundaries(res.boundaries)
       setSvgList(res.boundaries || [])
+      setLoading(false)
       navigate("/")
     })
     .catch(err => {
       console.log(err)
       setLoginError("Some of your info isn't correct. Please try again.")
+      setLoading(false)
     })
   }
 
@@ -80,7 +86,7 @@ export const Login = () => {
             setError={setPasswordError}
             setFormError={setLoginError}
           />
-          <button className='next'>Log In</button>
+          <button className='next'>{loading? "Loading..." : "Log In"}</button>
         </form>
         <p className='or'>or</p>
         <Link to="/signup" className='signup'>Sign Up</Link>

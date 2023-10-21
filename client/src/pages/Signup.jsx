@@ -10,10 +10,13 @@ export const Signup = () => {
   const [passwordError, setPasswordError] = useState(false)
   const [confirmPasswordError, setConfirmPasswordError] = useState(false)
   const [signupError, setSignupError] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const navigate = useNavigate()
 
+
   const handleSubmit = (e) => {
+    setLoading(true)
     e.preventDefault()
     setEmailError(false)
     setPasswordError(false)
@@ -25,6 +28,7 @@ export const Signup = () => {
       setEmailError(email.length === 0)
       setPasswordError(password.length === 0)
       confirmPassword.length === 0 && setConfirmPasswordError("Confirmation is required")
+      setLoading(false)
       return
     }
     const emailRegex = new RegExp(/([a-zA-Z0-9]+)([\_\.\-{1}])?([a-zA-Z0-9]+)\@([a-zA-Z0-9]+)([\.])([a-zA-Z\.]+)/g)
@@ -34,6 +38,7 @@ export const Signup = () => {
         setEmailError("Invalid email")
       }
       (password !== confirmPassword) && setConfirmPasswordError("Password does not match")
+      setLoading(false)
       return
     }
 
@@ -53,9 +58,12 @@ export const Signup = () => {
     .then(res => res.json())
     .then(res => {
       console.log(res)
+      setLoading(false)
       navigate("/login")
+
     })
     .catch(err => {
+      setLoading(false)
       setSignupError("User exists.")
     })
   }
@@ -90,7 +98,7 @@ export const Signup = () => {
             setError={setConfirmPasswordError}
             setFormError={setSignupError}
           />
-          <button className='next'>Sign Up</button>
+          <button className='next'>{loading ? "Loading..." : "Sign Up"}</button>
         </form>
         <p className='or'>or</p>
         <Link to="/login" className='login'>Log In</Link>
