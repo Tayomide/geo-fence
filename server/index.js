@@ -5,6 +5,7 @@ const isAuth = require("./middleware/is-auth")
 const login = require("./endpoints/login")
 const user = require("./endpoints/user")
 const signup = require("./endpoints/signup")
+const polygon = require("./endpoints/polygon")
 
 require("dotenv").config()
 
@@ -21,6 +22,7 @@ const PORT = 3000
 app.post("/login", login)
 app.post("/signup", signup)
 app.use("/user", user)
+app.use("/polygon", polygon)
 
 mongoose.connect(uri)
 .then(() => {
