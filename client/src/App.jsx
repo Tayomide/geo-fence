@@ -6,15 +6,9 @@ import Home from "./pages/Home"
 import {Signup} from "./pages/Signup"
 import { Login } from "./pages/Login"
 import { AuthModal } from "./components/AuthModal"
+import Navbar from "./components/NavBar"
 
 function App() {
-  const [svgList, setSvgList] = useState(
-    (localStorage["svgList"] && localStorage["svgList"] !== "undefined") ? 
-    JSON.parse(localStorage["svgList"]) : []
-  )
-  const [isEditing, setIsEditing] = useState(false)
-  const [editingIdx, setEditingIdx] = useState()
-  const [editSvg, setEditSvg] = useState([])
   const [token, setToken] = useState(
     localStorage["token"] !== "undefined" ? 
     localStorage["token"] : undefined
@@ -23,67 +17,50 @@ function App() {
     localStorage["tokenExpiration"] !== "undefined" ? 
     localStorage["tokenExpiration"] : undefined
   )
-  const [boundaries, setBoundaries] = useState(
-    (localStorage["boundaries"] && localStorage["boundaries"] !== "undefined") ?
-    JSON.parse(localStorage["boundaries"]) : []
-  )
-  const [isDeleting, setIsDeleting] = useState(false)
-  const [globalPoints, setGlobalPoints] = useState({
-    points: [],
-    adding: false
-  })
+  const [loggedIn, setLoggedIn] = useState(false)
 
-  useEffect(() => {
-    if(!isEditing){
-      if(editSvg.length > 2)setSvgList(prevSvgList => [...prevSvgList, editSvg])
-    }
-    return () => {
-      setEditSvg([])
-    }
-  }, [isEditing])
-
-  useEffect(() => {
-    localStorage["svgList"] = svgList
-    if(svgList?.length && JSON.stringify(svgList) !== JSON.stringify(boundaries)){
-      const body = JSON.stringify({
-        boundaries: svgList
-      })
-      const requestOptions = {
-        method: 'POST',
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: body
-      };
+  // useEffect(() => {
+  //   localStorage["svgList"] = svgList
+  //   if(svgList?.length && JSON.stringify(svgList) !== JSON.stringify(boundaries)){
+  //     const body = JSON.stringify({
+  //       boundaries: svgList
+  //     })
+  //     const requestOptions = {
+  //       method: 'POST',
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         "Authorization": `Bearer ${token}`
+  //       },
+  //       body: body
+  //     };
     
-      fetch(import.meta.env.VITE_REACT_SERVER_URI + "/user", requestOptions)
-      .then(res => res.text())
-      .then(res => {
-        console.log(res)
-        setBoundaries(svgList)
-      })
-      .catch(err => {
-        console.log(err)
-      })
-    }
+  //     fetch(import.meta.env.VITE_REACT_SERVER_URI + "/user", requestOptions)
+  //     .then(res => res.text())
+  //     .then(res => {
+  //       console.log(res)
+  //       setBoundaries(svgList)
+  //     })
+  //     .catch(err => {
+  //       console.log(err)
+  //     })
+  //   }
 
-  }, [svgList])
+  // }, [svgList])
 
   useEffect(() => {
     localStorage["token"] = token
     localStorage["tokenExpiration"] = tokenExpiration
-    localStorage["boundaries"] = JSON.stringify(boundaries)
-    localStorage["svgList"] = JSON.stringify(svgList)
-  }, [token, tokenExpiration, svgList, boundaries])
+  }, [token, tokenExpiration])
 
   const logout = () => {
     setToken()
     setTokenExpiration()
+    setLoggedIn(false)
   }
 
   useEffect(() => {
     if(!tokenExpiration)return
+    setLoggedIn(!!(new Date(tokenExpiration) - new Date()))
     const tokenTimeout = setTimeout(logout, new Date(tokenExpiration) - new Date())
     return () => {
       clearTimeout(tokenTimeout)
@@ -92,29 +69,18 @@ function App() {
 
   return (
     <Container>
+      <Navbar loggedIn={loggedIn} setTokenExpiration={setTokenExpiration} />
       <AppContext.Provider
         value={{
-          isEditing,
-          editingIdx,
-          editSvg,
-          svgList,
-          setSvgList,
-          setEditingIdx,
-          setIsEditing,
-          setEditSvg,
           token,
           setToken,
           tokenExpiration,
           setTokenExpiration,
-          boundaries,
-          setBoundaries,
-          isDeleting,
-          setIsDeleting,
-          globalPoints,
-          setGlobalPoints
+          loggedIn,
+          setLoggedIn
         }}
       >
-        {!token?.length && <AuthModal />}
+        {!loggedIn && <AuthModal />}
         <Routes>
           <Route path="/" exact element={<Home />} />
           <Route path="/signup" exact element={<Signup />} />
