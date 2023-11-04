@@ -10,7 +10,6 @@ const userSchema = Schema({
     required: true
   },
   name: String,
-  boundaries: [[[Number]]]
 })
 
 module.exports = model("Users", userSchema)
