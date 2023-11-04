@@ -1,12 +1,17 @@
 import styled from 'styled-components'
+import GoogleMap from "../components/GoogleMap"
 import Controls from "../components/Controls"
 import LeafletMap from "../components/LeafletMap"
+import { useContext } from 'react'
+import AppContext from '../hooks/AppContext'
 
 const Home = () => {
+  const { token, loggedIn } = useContext(AppContext)
   return (
     <Container>
-      <LeafletMap />
-      <Controls />
+      {/* <LeafletMap /> */}
+      {/* <Controls /> */}
+      {token && loggedIn && <GoogleMap />}
     </Container>
   )
 }
