@@ -11,7 +11,7 @@ export const Login = () => {
   const [emailError, setEmailError] = useState(false)
   const [passwordError, setPasswordError] = useState(false)
   const [loginError, setLoginError] = useState(false)
-  const { setToken, setTokenExpiration, setBoundaries, setSvgList } = useContext(AppContext)
+  const { setToken, setTokenExpiration, setLoggedIn} = useContext(AppContext)
   const [loading, setLoading] = useState(false)
 
   const navigate = useNavigate()
@@ -53,8 +53,7 @@ export const Login = () => {
       console.log(res)
       setToken(res.token)
       setTokenExpiration(res.tokenExpiration)
-      setBoundaries(res.boundaries)
-      setSvgList(res.boundaries || [])
+      setLoggedIn(true)
       setLoading(false)
       navigate("/")
     })
