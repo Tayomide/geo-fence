@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Link, useLocation } from 'react-router-dom'
+import AppContext from '../hooks/AppContext'
 
 export const AuthModal = () => {
   const location = useLocation()
   const [display, setDisplay] = useState(false)
   const ignoreRoutes = ["login", "signup"]
+  const { token } = useContext(AppContext)
   useEffect(() => {
     if(ignoreRoutes.includes(location.pathname.split("/")[1].toLowerCase())){
       setDisplay(false)
@@ -13,7 +15,7 @@ export const AuthModal = () => {
     }
     setDisplay(true)
   }, [location])
-  return (display &&
+  return (display && token &&
     <Container>
       <div className='modal'>
         <h2>Your sesssion has expired</h2>
