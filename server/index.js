@@ -17,7 +17,7 @@ app.use(cors())
 
 app.use(isAuth)
 
-const PORT = 3000
+const PORT = 3001
 
 app.post("/login", login)
 app.post("/signup", signup)
