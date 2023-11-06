@@ -44,7 +44,7 @@ export const Signup = () => {
     }
 
     const body = JSON.stringify({
-      "email": email,
+      "email": email.toLowerCase(),
       "password": password
     })
     const requestOptions = {
