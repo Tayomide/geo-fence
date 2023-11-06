@@ -31,7 +31,7 @@ const GoogleMap = () => {
   const [updated, setUpdated] = useState(false)
   const { token } = useContext(AppContext)
 
-  useEffect(() => {
+  const getPolygons = () => {
     const requestOptions = {
       method: 'GET',
       headers: {
@@ -62,6 +62,13 @@ const GoogleMap = () => {
         })
       })
     })
+    .catch(err => {
+      console.log(err)
+    })
+  }
+
+  useEffect(() => {
+    getPolygons()
   }, [])
 
   useEffect(() => {
@@ -199,6 +206,7 @@ const GoogleMap = () => {
     .then(res => {
       console.log(res)
       setUpdated(false)
+      getPolygons()
     })
     .catch(err => console.log(err))
   }
